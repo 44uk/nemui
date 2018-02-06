@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import nem from 'nem-sdk'
 import { mapGetters, mapActions } from 'vuex'
 import { sanitizeAddress } from '@/helpers/format.js'
 
@@ -50,8 +51,7 @@ export default {
     }
 
     const validateFormat = (rule, value, callback) => {
-      // TODO: to be strict pattern
-      if (/[ABCDEFGHIJKLMNOPQRSTUVWXYZ234567-]{40,46}/.test(value)) {
+      if (nem.model.address.isValid(value)) {
         callback()
       } else {
         callback(new Error('Please input valid address'))

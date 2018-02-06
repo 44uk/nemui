@@ -1,31 +1,41 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="6">Timestamp</el-col>
-      <el-col :span="18">{{ timeStamp | nemtime2iso8601 }} </el-col>
+      <el-col :span="4">Fee</el-col>
+      <el-col :span="20">{{ fee | nemValue }} xem</el-col>
     </el-row>
     <el-row>
-      <el-col :span="6">Deadline</el-col>
-      <el-col :span="18">{{ deadline | nemtime2iso8601 }}</el-col>
+      <el-col :span="4">Timestamp</el-col>
+      <el-col :span="20">{{ timeStamp | nemtime2iso8601 }} </el-col>
     </el-row>
     <el-row>
-      <el-col :span="6">Block</el-col>
-      <el-col :span="18"><a :href="blockUrl" target="_blank">{{ block }}</a></el-col>
+      <el-col :span="4">Deadline</el-col>
+      <el-col :span="20">{{ deadline | nemtime2iso8601 }}</el-col>
     </el-row>
     <el-row>
-      <el-col :span="6">Hash</el-col>
-      <el-col :span="18">{{ hash }}</el-col>
+      <el-col :span="4">Block</el-col>
+      <el-col :span="20"><a :href="blockUrl" target="_blank">{{ block }}</a></el-col>
     </el-row>
     <el-row>
-      <el-col :span="6">Signer</el-col>
-      <el-col :span="18">{{ signer }}</el-col>
+      <el-col :span="4">Hash</el-col>
+      <el-col :span="20">{{ hash }}</el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="4">Signer</el-col>
+      <el-col :span="20">
+        {{ signer }}<br>
+        {{ signer | publicKeyToAddress(network) | splitAddressByHyphen }}
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
 import {
+  publicKeyToAddress,
+  splitAddressByHyphen,
   nemtime2iso8601,
+  nemValue,
   explorerBlockUrl
 } from '@/helpers/format.js'
 import { mapGetters } from 'vuex'
@@ -33,14 +43,18 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'transaction-info',
   filters: {
-    nemtime2iso8601: nemtime2iso8601
+    splitAddressByHyphen,
+    publicKeyToAddress,
+    nemtime2iso8601,
+    nemValue
   },
   props: {
     block: Number,
     hash: String,
     timeStamp: Number,
     deadline: Number,
-    signer: String
+    signer: String,
+    fee: Number
   },
   data: function () {
     return {

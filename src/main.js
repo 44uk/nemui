@@ -9,7 +9,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import store from './store/app'
 import App from './App'
 
-Vue.use(Vuex)
 Vue.use(ElementUI, { locale })
 Vue.use(ElementUI, { size: 'small' })
 Vue.config.productionTip = false

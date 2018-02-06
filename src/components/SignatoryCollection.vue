@@ -8,6 +8,9 @@
       prop="address"
       label="Address"
     >
+      <template slot-scope="scope">
+        {{ scope.row.address | splitAddressByHyphen }}
+      </template>
     </el-table-column>
     <el-table-column
       prop="publicKey"
@@ -19,9 +22,15 @@
 
 <script>
 // import { mapGetters, mapActions } from 'vuex'
+import {
+  splitAddressByHyphen
+} from '@/helpers/format.js'
 
 export default {
   name: 'signatory-collection',
+  filters: {
+    splitAddressByHyphen
+  },
   props: {
     items: Array
   },

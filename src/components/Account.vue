@@ -1,10 +1,15 @@
 <template>
   <el-card :body-style="{padding: '10px 20px'}">
     <div slot="header">
-      <span>{{ formattedAddress }}</span>
-      <el-tag type="warning" size="mini" v-if="isMultisig">Multisig</el-tag>
+      <span>{{ address | splitAddressByHyphen }}</span>
       <el-tag type="success" size="mini" v-if="isCosignatory">Cosignatory</el-tag>
-      <el-tag type="danger" size="mini" v-if="is2of2Multisig">2of2</el-tag>
+      <el-tag type="warning" size="mini" v-if="isMultisig">Multisig</el-tag>
+      <el-tag size="mini" v-if="isMultisig">
+        {{msigInfo.minCosignatories }}of{{ msigInfo.cosignatoriesCount}}
+      </el-tag>
+      <el-tag type="danger" size="mini" v-if="is2of2Multisig">
+        <i class="el-icon-warning" />
+      </el-tag>
 
       <el-button icon="el-icon-delete"
         size="mini"
@@ -19,6 +24,7 @@
         @click="refresh()"
       />
     </div>
+
     <el-tabs v-model="activeTab">
       <el-tab-pane label="Unconfirmed" name="unconfirmed">
         <span slot="label">
@@ -26,15 +32,17 @@
         </span>
         <transaction-collection :items="unconfirmed" :address="address" />
       </el-tab-pane>
+
       <el-tab-pane label="Transactions" name="transactions">
         <transaction-collection :items="transactions" :address="address" />
       </el-tab-pane>
+
       <el-tab-pane label="Mosaics" name="mosaics">
         <mosaic-collection :items="mosaics" />
       </el-tab-pane>
+
       <el-tab-pane label="Account" name="account">
-        <account-info
-          :info="info"
+        <account-info :info="info"
           :node="node"
           :height="height"
         />
@@ -67,9 +75,12 @@ import CosignatoryCollection from '@/components/CosignatoryCollection'
 import SignatoryCollection from '@/components/SignatoryCollection'
 import Config from '@/components/Config'
 
-import { rebuildMosaicProps, splitAddressByHyphen } from '@/helpers/format.js'
+import {
+  rebuildMosaicProps,
+  splitAddressByHyphen
+} from '@/helpers/format.js'
 
-const NOTIFICATION_DURATION = 2525
+const NOTIFICATION_DURATION = 1800
 const NEM_WS = nem.com.websockets
 
 export default {
@@ -80,6 +91,9 @@ export default {
     CosignatoryCollection,
     SignatoryCollection,
     Config
+  },
+  filters: {
+    splitAddressByHyphen
   },
   props: {
     address: String,
@@ -133,9 +147,6 @@ export default {
     ...mapGetters([
       'mosaicDefinitions'
     ]),
-    formattedAddress: function () {
-      return splitAddressByHyphen(this.address)
-    },
     msigInfo: function () {
       return this.info.multisigInfo
     },
@@ -147,7 +158,8 @@ export default {
     },
     is2of2Multisig: function () {
       return this.isMultisig &&
-        this.msigInfo.cosignatoriesCount === this.msigInfo.minCosignatories
+        this.msigInfo.cosignatoriesCount === 2 &&
+        this.msigInfo.minCosignatories === 2
     }
   },
   methods: {
@@ -179,9 +191,7 @@ export default {
         // })
         NEM_WS.subscribe.account.mosaics.definitions(this.connector, this.onReceivedMosaicDefinition)
         NEM_WS.subscribe.chain.height(this.connector, this.onReceivedChainHeight)
-        NEM_WS.subscribe.errors(this.connector, (res) => {
-          console.error(res)
-        })
+        NEM_WS.subscribe.errors(this.connector, this.onError)
 
         NEM_WS.requests.account.data(this.connector)
         NEM_WS.requests.account.transactions.recent(this.connector)
@@ -224,18 +234,23 @@ export default {
       // console.log('unconfirmed -----')
       // console.log(res)
       this.unconfirmed.unshift(res)
+      this.unconfirmed = _.uniqBy(this.unconfirmed, trans => {
+        return trans.meta.hash.data
+      })
+
       this.enableSound && this.playSound('unconfirmed.ogg')
     },
     onReceivedConfirmed (res) {
       // console.log('confirmed -----')
       // console.log(res)
-      // TODO: 本当はちゃんとconfirmedしたtxをunconfirmedから消したい
-      // じゃないとマルチシグの待ちとかも消えちゃうかも
-      this.unconfirmed = []
+      this.unconfirmed = this.unconfirmed.filter(trans => {
+        return trans.meta.hash.data !== res.meta.hash.data
+      })
       this.transactions.unshift(res)
+      this.transactions = _.uniqBy(this.transactions, trans => {
+        return trans.meta.hash.data
+      })
 
-      // TODO: この辺の実装はあやしい
-      // もしキャッシュしてないモザイク定義だったら読んでキャッシュさせる
       if (!this.hasMosaicDefinitionCache(res)) {
         NEM_WS.requests.account.mosaics.definitions(this.connector)
       }
@@ -244,10 +259,16 @@ export default {
       this.enableSound && this.playSound('confirmed.ogg')
     },
     onReceivedMosaicDefinition (res) {
-      let def = res.mosaicDefinition
-      def['fqn'] = nem.utils.format.mosaicIdToName(def.id)
-      def = Object.assign(def, rebuildMosaicProps(def.properties))
-      this.cacheMosaicDefinition(def)
+      const supply = res.supply
+      const def = res.mosaicDefinition
+      const fqn = nem.utils.format.mosaicIdToName(def.id)
+      const redef = {
+        fqn,
+        ...def,
+        ...rebuildMosaicProps(def.properties),
+        supply
+      }
+      this.cacheMosaicDefinition(redef)
       NEM_WS.requests.account.mosaics.owned(this.connector)
     },
     onReceivedOwnedMosaics (res) {
@@ -267,9 +288,11 @@ export default {
       // console.log('-- onReceivedChainHeight')
       this.height = res.height
     },
-    hasMosaicDefinitionCache (mosaicId) {
-      // this.mosaicDefinitions
-      return false
+    onError (res) {
+      console.error(res)
+    },
+    hasMosaicDefinitionCache (fqn) {
+      return !!this.mosaicDefinitions[fqn]
     },
     playSound (name) {
       new Audio(require(`@/assets/sound/${name}`)).play()

@@ -24,8 +24,12 @@ const DEFAULT_MIJIN_NODES = [
 ]
 
 export default new Vuex.Store({
-  plugins: [createPersistedState()],
   debug: true,
+  plugins: [
+    createPersistedState({
+      key: 'nemui-state'
+    })
+  ],
   state: {
     view: {
       network: 'testnet'
@@ -34,31 +38,20 @@ export default new Vuex.Store({
     testnet: {
       maxHeight: 0,
       nodes: DEFAULT_TESTNET_NODES,
-      accounts: []
+      accounts: [],
+      mosaicDefinitions: {}
     },
     mainnet: {
       maxHeight: 0,
       nodes: DEFAULT_MAINNET_NODES,
-      accounts: []
+      accounts: [],
+      mosaicDefinitions: {}
     },
     mijin: {
       maxHeight: 0,
       nodes: DEFAULT_MIJIN_NODES,
-      accounts: []
-    },
-    cache: {
-      mosaicDefinitions: {
-        'nem:xem': {
-          creator: '3e82e1c1e4a75adaa3cba8c101c3cd31d9817a2eb966eb3b511fb2ed45b8e262',
-          description: 'nem:xem',
-          divisibility: 6,
-          initialSupply: 8999999999,
-          supplyMutable: false,
-          transferable: true,
-          levy: {},
-          supply: 0
-        }
-      }
+      accounts: [],
+      mosaicDefinitions: {}
     }
   },
   getters: {
@@ -68,7 +61,7 @@ export default new Vuex.Store({
     nodes: state => state.current.nodes,
     accounts: state => state.current.accounts,
 
-    mosaicDefinitions: state => state.cache.mosaicDefinitions,
+    mosaicDefinitions: state => state.current.mosaicDefinitions,
     network: state => state.view.network
   },
   mutations: {
@@ -76,7 +69,6 @@ export default new Vuex.Store({
       state.view.network = network
       state.current = state[state.view.network]
     },
-
     addNode (state, node) {
       state.current.nodes.unshift(`${node.host}`)
     },
@@ -86,7 +78,6 @@ export default new Vuex.Store({
         (el) => el !== node
       )
     },
-
     addAccount (state, account) {
       state.current.accounts.unshift(account)
     },
@@ -96,9 +87,8 @@ export default new Vuex.Store({
         (el) => !_.isEqual(el, account)
       )
     },
-
     cacheMosaicDefinition (state, def) {
-      state.cache.mosaicDefinitions[def.fqn] = def
+      state.current.mosaicDefinitions[def.fqn] = def
     }
   },
   actions: {

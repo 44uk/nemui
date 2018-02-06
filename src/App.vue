@@ -2,6 +2,10 @@
   <div id="app">
     <el-container>
       <el-header>
+        <div style="float: left">
+          <img src="./assets/logo.svg" height="18" />
+          <span>nemui</span>
+        </div>
         <div style="text-align: right; font-size: 12px">
           <el-select size="mini" v-model="selectedNetwork" @change="changeNetwork">
             <el-option label="testnet" value="testnet" />
@@ -75,6 +79,7 @@ export default {
   },
   created: function () {
     this.selectedNetwork = this.network
+    this.setNetwork(this.selectedNetwork)
   }
 }
 </script>

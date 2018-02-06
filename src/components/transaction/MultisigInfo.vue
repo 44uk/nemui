@@ -1,57 +1,31 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="6">Timestamp</el-col>
-      <el-col :span="18">{{ timeStamp | nemtime2iso8601 }} </el-col>
+      <el-col :span="4">Signer</el-col>
+      <el-col :span="20">{{ signer }}</el-col>
     </el-row>
     <el-row>
-      <el-col :span="6">Deadline</el-col>
-      <el-col :span="18">{{ deadline | nemtime2iso8601 }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="6">Signer</el-col>
-      <el-col :span="18">{{ signer }}</el-col>
-    </el-row>
-
-    <el-row>
-      <el-col :span="6">Signatures</el-col>
-      <el-col :span="18">
+      <el-col :span="4">Signatures</el-col>
+      <el-col :span="20">
         <signature-info v-for="sign in signatures" :key="sign.signature"
-          :signer="sign.signer"
           :timeStamp="sign.timeStamp"
+          :deadline="sign.deadline"
+          :otherAccount="sign.otherAccount"
+          :signer="sign.signer"
 
           :data="sign"
         />
       </el-col>
     </el-row>
-
     <el-row>
-      <el-col :span="6"></el-col>
-      <el-col :span="18">{{  }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="6"></el-col>
-      <el-col :span="18">{{  }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="6"></el-col>
-      <el-col :span="18">{{  }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="6"></el-col>
-      <el-col :span="18">{{  }}</el-col>
+      <el-col :span="4">Multisig Fee</el-col>
+      <el-col :span="20">{{ signFee | nemValue }} xem</el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-// {
-  //   "timeStamp": 86788681,
-//   "signature": "dce2b2094d441146d94f1967d8610541c970f36be7364ee49730a123092dc7c6404b1de904288f641ac2b56fa52890445238ce0eba2c824a2ba6800d90a0e10f",
-//   "fee": 150000,
-//   "type": 4100,
-  //   "deadline": 86792281,
-//   "version": -1744830463,
+//   "deadline": 86792281,
 //   "signatures": [
 //     {
 //       "timeStamp": 86789836,
@@ -67,11 +41,11 @@
 //       "signer": "9e7ab2924cd1a3482df784db190614cfc8a33671f5d80a5b15a9c9e8b4d13933"
 //     }
 //   ],
-  //   "signer": "be2ba9cb15a547110d511a4d43c0482fbb584d78781abac01fb053d18f4a0033"
 // }
 
 import {
-  nemtime2iso8601
+  nemtime2iso8601,
+  nemValue
 } from '@/helpers/format.js'
 
 import SignatureInfo from '@/components/transaction/SignatureInfo'
@@ -79,7 +53,8 @@ import SignatureInfo from '@/components/transaction/SignatureInfo'
 export default {
   name: 'multisig-info',
   filters: {
-    nemtime2iso8601: nemtime2iso8601
+    nemtime2iso8601,
+    nemValue
   },
   components: {
     SignatureInfo
@@ -89,6 +64,8 @@ export default {
     deadline: Number,
     signer: String,
     signatures: Array,
+    fee: Number,
+
     data: Object
   },
   data: function () {
@@ -96,6 +73,11 @@ export default {
     }
   },
   computed: {
+    signFee: function () {
+      return (this.fee + this.signatures.reduce((memo, el) => {
+        return memo + el.fee
+      }, 0))
+    }
   },
   methods: {
   }

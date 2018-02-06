@@ -1,4 +1,49 @@
+import nem from 'nem-sdk'
 import moment from 'moment'
+
+moment.locale(window.navigator.userLanguage || window.navigator.language)
+
+function levyTypeToName (value) {
+  return value === 1 ? 'Constant fee'
+    : value === 2 ? 'Percentage based' : `Undefined ${value}`
+}
+
+function mosaicIdToFqn (value) {
+  return `${value['namespaceId']}:${value['name']}`
+}
+
+function nemValue (value) {
+  const tmp = nem.utils.format.nemValue(value)
+  return `${tmp[0].replace(/ /g, ',')}.${tmp[1]}`
+}
+
+function txTypeToName (value) {
+  return nem.utils.format.txTypeToName(value)
+}
+
+function modeToName (value) {
+  return value === 1 ? 'Activate' : 'Deactivate'
+}
+
+function supplyTypeToName (value) {
+  return value === 1 ? 'Add' : 'Remove'
+}
+
+function modificationTypeToName (value) {
+  return value === 1 ? 'Add' : 'Remove'
+}
+
+function publicKeyToAddress (publicKey, network) {
+  let id = null
+  if (network === 'mijin') {
+    id = 96
+  } else if (network === 'mainnet') {
+    id = 104
+  } else {
+    id = -104
+  }
+  return nem.model.address.toAddress(publicKey, id)
+}
 
 function sanitizeAddress (address = '') {
   return address.replace(/-/g, '').toUpperCase()
@@ -27,7 +72,7 @@ function rebuildMosaicProps (properties) {
 }
 
 function nemtime2iso8601 (nemtime) {
-  return moment(1427587585000 + nemtime * 1000).toISOString()
+  return moment(1427587585000 + nemtime * 1000).format('lll')
 }
 
 function versionToNetworkName (version) {
@@ -95,6 +140,14 @@ function explorerAccountUrl (address, network) {
 }
 
 export {
+  levyTypeToName,
+  supplyTypeToName,
+  mosaicIdToFqn,
+  modeToName,
+  nemValue,
+  txTypeToName,
+  modificationTypeToName,
+  publicKeyToAddress,
   explorerBlockUrl,
   explorerHashUrl,
   explorerNamespaceUrl,
