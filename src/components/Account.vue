@@ -169,6 +169,7 @@ export default {
     ]),
     connect () {
       this.connector.connect().then(() => {
+        // console.log('--- connected')
         this.enableSound && this.playSound('connected.ogg')
 
         this.$notify({
@@ -179,6 +180,7 @@ export default {
           duration: NOTIFICATION_DURATION
         })
 
+        NEM_WS.subscribe.errors(this.connector, this.onError)
         NEM_WS.subscribe.account.data(this.connector, this.onReceivedAccountData)
         NEM_WS.subscribe.account.mosaics.owned(this.connector, this.onReceivedOwnedMosaics)
         NEM_WS.subscribe.account.transactions.recent(this.connector, this.onReceivedRecent)
@@ -191,7 +193,6 @@ export default {
         // })
         NEM_WS.subscribe.account.mosaics.definitions(this.connector, this.onReceivedMosaicDefinition)
         NEM_WS.subscribe.chain.height(this.connector, this.onReceivedChainHeight)
-        NEM_WS.subscribe.errors(this.connector, this.onError)
 
         NEM_WS.requests.account.data(this.connector)
         NEM_WS.requests.account.transactions.recent(this.connector)
