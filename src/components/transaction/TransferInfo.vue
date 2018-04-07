@@ -61,16 +61,16 @@ export default {
       return !!this.mosaics && this.mosaics.length > 0
     },
     messageTypeName: function () {
-      return this.message.type === 2 ? 'Encrypted' :
-        /^fe[0-9a-f]*?$/.test(this.message.payload) ? 'Hexdecimal' :
-        'Plain'
+      return this.message.type === 2 ? 'Encrypted'
+        : /^fe[0-9a-f]*?$/.test(this.message.payload) ? 'Hexdecimal'
+          : 'Plain'
     },
     messageDecoded: function () {
       const payload = this.message.payload
-      return this.messageTypeName === 'Encrypted' ? payload :
-        this.messageTypeName === 'Hexdecimal' ?
-          payload :
-          nem.utils.format.hexToUtf8(payload)
+      return this.messageTypeName === 'Encrypted' ? payload
+        : this.messageTypeName === 'Hexdecimal'
+          ? payload
+          : nem.utils.format.hexToUtf8(payload)
     },
     prettifiedMosaics: function () {
       return this.mosaics.map(el => {

@@ -225,10 +225,10 @@ export default {
           ? el.transaction
           : null
 
-        const multisigFee = !!multisig ? multisig.signatures.reduce((memo, el) => {
-            return memo + el.fee
-          }, 0) + multisig.fee :
-          0
+        const multisigFee = multisig ? multisig.signatures.reduce((memo, el) => {
+          return memo + el.fee
+        }, 0) + multisig.fee
+          : 0
 
         return {
           isIncoming: this.address === tx.recipient,
