@@ -10,7 +10,7 @@
           <el-select size="mini" v-model="selectedNetwork" @change="changeNetwork">
             <el-option label="testnet" value="testnet" />
             <el-option label="mainnet" value="mainnet" />
-            <el-option label="mijin" value="mijin" />
+            <el-option label="mijin"   value="mijin" />
           </el-select>
           <el-button type="primary" icon="el-icon-edit"
             size="mini"
@@ -39,10 +39,20 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-
 import NodeForm from '@/components/NodeForm'
 import AccountForm from '@/components/AccountForm'
 import AccountCollection from '@/components/AccountCollection'
+import { NEMLibrary, NetworkTypes } from 'nem-library'
+
+function networkName2int (networkName) {
+  if (networkName === 'mainnet') {
+    return NetworkTypes.MAIN_NET
+  } else if (networkName === 'testnet') {
+    return NetworkTypes.TEST_NET
+  } else {
+    return 0
+  }
+}
 
 export default {
   name: 'app',
@@ -50,6 +60,10 @@ export default {
     NodeForm,
     AccountForm,
     AccountCollection
+  },
+  beforeMount: function () {
+    NEMLibrary.reset()
+    NEMLibrary.bootstrap(networkName2int(this.network))
   },
   data: function () {
     return {
@@ -75,6 +89,8 @@ export default {
     ]),
     changeNetwork () {
       this.setNetwork(this.selectedNetwork)
+      NEMLibrary.reset()
+      NEMLibrary.bootstrap(networkName2int(this.network))
     }
   },
   created: function () {

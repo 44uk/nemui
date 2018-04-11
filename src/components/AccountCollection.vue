@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import Account from '@/components/Account'
 
 export default {
@@ -18,10 +17,6 @@ export default {
   },
   props: {
     accounts: Array
-  },
-  computed: {
-    ...mapGetters([
-    ])
   },
   methods: {
     identify (account) {

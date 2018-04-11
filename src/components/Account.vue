@@ -64,8 +64,16 @@
 </template>
 
 <script>
+// import nem from 'nem-sdk'
 import _ from 'lodash'
-import nem from 'nem-sdk'
+import {
+  Address,
+  AccountHttp,
+  AccountListener,
+  ConfirmedTransactionListener,
+  UnconfirmedTransactionListener,
+  BlockchainListener
+} from 'nem-library'
 import { mapGetters, mapActions } from 'vuex'
 
 import AccountInfo from '@/components/AccountInfo'
@@ -81,7 +89,7 @@ import {
 } from '@/helpers/format.js'
 
 const NOTIFICATION_DURATION = 1800
-const NEM_WS = nem.com.websockets
+// const NEM_WS = nem.com.websockets
 
 export default {
   components: {
@@ -101,6 +109,7 @@ export default {
   },
   data: function () {
     return {
+      subscriptions: [],
       unconfirmed: [],
       transactions: [],
       mosaics: [],
@@ -120,18 +129,6 @@ export default {
     }
   },
   beforeMount: function () {
-    const wsEndpoint = nem.model.objects.create('endpoint')(
-      `http://${this.node}`,
-      nem.model.nodes.websocketPort
-    )
-    // const httpEndpoint = nem.model.objects.create('endpoint')(
-    //   `http://${this.node}`,
-    //   nem.model.nodes.defaultPort
-    // )
-    this.connector = NEM_WS.connector.create(
-      wsEndpoint,
-      this.address
-    )
     this.connect()
   },
   mounted: function () {
@@ -168,41 +165,91 @@ export default {
       'cacheMosaicDefinition'
     ]),
     connect () {
-      this.connector.connect().then(() => {
-        // console.log('--- connected')
-        this.enableSound && this.playSound('connected.ogg')
+      const node = [{ domain: this.node }]
+      const addr = new Address(this.address)
+      const accountHttp = new AccountHttp(node)
 
-        this.$notify({
-          type: 'success',
-          title: this.node,
-          message: splitAddressByHyphen(this.address),
-          position: 'bottom-left',
-          duration: NOTIFICATION_DURATION
-        })
+      accountHttp.getFromAddress(addr).subscribe(
+        this.onReceivedAccountData,
+        err => onError,
+        () => console.log('getFromAddress complete')
+      )
 
-        NEM_WS.subscribe.errors(this.connector, this.onError)
-        NEM_WS.subscribe.account.data(this.connector, this.onReceivedAccountData)
-        NEM_WS.subscribe.account.mosaics.owned(this.connector, this.onReceivedOwnedMosaics)
-        NEM_WS.subscribe.account.transactions.recent(this.connector, this.onReceivedRecent)
-        NEM_WS.subscribe.account.transactions.unconfirmed(this.connector, this.onReceivedUnconfirmed)
-        NEM_WS.subscribe.account.transactions.confirmed(this.connector, this.onReceivedConfirmed)
-        // NEM_WS.subscribe.account.namespaces.owned(this.connector, res => {
-        //   console.log('namespace -----')
-        //   console.log(res)
-        //   console.log('/namespace -----')
-        // })
-        NEM_WS.subscribe.account.mosaics.definitions(this.connector, this.onReceivedMosaicDefinition)
-        NEM_WS.subscribe.chain.height(this.connector, this.onReceivedChainHeight)
+      this.subscriptions.push(
+        new AccountListener(node).given(addr).subscribe(
+          this.onReceivedAccountData,
+          err => onError,
+          () => console.log('complete')
+        )
+      )
 
-        NEM_WS.requests.account.data(this.connector)
-        NEM_WS.requests.account.transactions.recent(this.connector)
-        NEM_WS.requests.account.mosaics.definitions(this.connector)
-        // NEM_WS.requests.account.namespaces.owned(this.connector)
-      })
+      this.subscriptions.push(
+        new BlockchainListener(node).newBlock().subscribe(
+          this.onReceivedBlock,
+          err => onError,
+          () => console.log('BlockchainListener complete')
+        )
+      )
+
+      accountHttp.allTransactions(addr).subscribe(
+        this.onReceivedAll,
+        err => onError,
+        () => {
+          this.$notify({
+            type: 'success',
+            title: this.node,
+            message: splitAddressByHyphen(this.address),
+            position: 'bottom-left',
+            duration: NOTIFICATION_DURATION
+          })
+        }
+      )
+
+      accountHttp.unconfirmedTransactions(addr).subscribe(
+        this.onReceivedUnconfirmed,
+        err => onError,
+        () => console.log('unconfirmedTransactions complete')
+      )
+
+      this.subscriptions.push(
+        new UnconfirmedTransactionListener(node).given(addr).subscribe(
+          this.onReceivedUnconfirmed,
+          err => onError,
+          () => console.log('UnconfirmedTransactionListener complete')
+        )
+      )
+
+      // this.subscriptions.push(
+      //   new ConfirmedTransactionListener(node).given(addr)
+      //     .subscribe(this.onReceivedConfirmed)
+      // )
+
+
+      this.enableSound && this.playSound('connected.ogg')
+
+      // NEM_WS.subscribe.account.transactions.recent(this.connector, this.onReceivedRecent)
+      // NEM_WS.subscribe.account.data(this.connector, this.onReceivedAccountData)
+      // NEM_WS.subscribe.errors(this.connector, this.onError)
+      // NEM_WS.subscribe.account.mosaics.owned(this.connector, this.onReceivedOwnedMosaics)
+      // NEM_WS.subscribe.account.transactions.unconfirmed(this.connector, this.onReceivedUnconfirmed)
+      // NEM_WS.subscribe.account.transactions.confirmed(this.connector, this.onReceivedConfirmed)
+      // // NEM_WS.subscribe.account.namespaces.owned(this.connector, res => {
+      // //   console.log('namespace -----')
+      // //   console.log(res)
+      // //   console.log('/namespace -----')
+      // // })
+      // NEM_WS.subscribe.account.mosaics.definitions(this.connector, this.onReceivedMosaicDefinition)
+      // NEM_WS.subscribe.chain.height(this.connector, this.onReceivedChainHeight)
+
+      // NEM_WS.requests.account.data(this.connector)
+      // NEM_WS.requests.account.transactions.recent(this.connector)
+      // NEM_WS.requests.account.mosaics.definitions(this.connector)
+      // NEM_WS.requests.account.namespaces.owned(this.connector)
     },
     disconnect () {
-      this.connector.close()
-      this.enableSound && this.playSound('disconnected.ogg')
+      this.subscriptions.forEach(sub => sub.unsubscribe())
+      this.subscriptions = []
+      // this.enableSound && this.playSound('disconnected.ogg')
       this.$notify({
         type: 'info',
         title: this.node,
@@ -225,68 +272,73 @@ export default {
         node: this.node
       })
     },
-    onReceivedRecent (res) {
-      // console.log('recent -----')
-      // console.log(res)
-      this.transactions = this.transactions.concat(res.data)
-      this.enableSound && this.playSound('confirmed.ogg')
+    onReceivedAll (res) {
+      console.log('-- onReceivedAll')
+      console.log(res)
+      this.transactions = this.transactions.concat(res)
+      // this.enableSound && this.playSound('confirmed.ogg')
     },
     onReceivedUnconfirmed (res) {
-      // console.log('unconfirmed -----')
-      // console.log(res)
-      this.unconfirmed.unshift(res)
-      this.unconfirmed = _.uniqBy(this.unconfirmed, trans => {
-        return trans.meta.hash.data
+      console.log('-- onReceivedUnconfirmed')
+      console.log(res)
+      const tx = (_.isArray(res) ? res[0] : res)
+      if (!tx) { return false }
+      this.unconfirmed.unshift(tx)
+      this.unconfirmed = _.uniqBy(this.unconfirmed, tx => {
+        return tx.timeWindow.timeStampToDTO()
       })
-
       this.enableSound && this.playSound('unconfirmed.ogg')
     },
     onReceivedConfirmed (res) {
-      // console.log('confirmed -----')
-      // console.log(res)
-      this.unconfirmed = this.unconfirmed.filter(trans => {
-        return trans.meta.hash.data !== res.meta.hash.data
+      console.log('-- onReceivedConfirmed')
+      console.log(res)
+      this.unconfirmed = this.unconfirmed.filter(tx => {
+        return tx.timeWindow.timeStampToDTO() !== res.timeWindow.timeStampToDTO()
       })
       this.transactions.unshift(res)
-      this.transactions = _.uniqBy(this.transactions, trans => {
-        return trans.meta.hash.data
+      this.transactions = _.uniqBy(this.transactions, tx => {
+        return tx.meta.hash.data
       })
 
-      if (!this.hasMosaicDefinitionCache(res)) {
-        NEM_WS.requests.account.mosaics.definitions(this.connector)
-      }
-      NEM_WS.requests.account.mosaics.owned(this.connector)
+      // if (!this.hasMosaicDefinitionCache(res)) {
+      //   NEM_WS.requests.account.mosaics.definitions(this.connector)
+      // }
+      // NEM_WS.requests.account.mosaics.owned(this.connector)
 
       this.enableSound && this.playSound('confirmed.ogg')
     },
-    onReceivedMosaicDefinition (res) {
-      const supply = res.supply
-      const def = res.mosaicDefinition
-      const fqn = nem.utils.format.mosaicIdToName(def.id)
-      const redef = {
-        fqn,
-        ...def,
-        ...rebuildMosaicProps(def.properties),
-        supply
-      }
-      this.cacheMosaicDefinition(redef)
-      NEM_WS.requests.account.mosaics.owned(this.connector)
-    },
-    onReceivedOwnedMosaics (res) {
-      // console.log('-- onReceivedOwnedMosaics')
-      res['fqn'] = nem.utils.format.mosaicIdToName(res.mosaicId)
-      this.mosaics = _.sortBy(_.unionBy([res], this.mosaics, 'fqn'), 'fqn')
-    },
+    // onReceivedMosaicDefinition (res) {
+    //   const supply = res.supply
+    //   const def = res.mosaicDefinition
+    //   // const fqn = nem.utils.format.mosaicIdToName(def.id)
+    //   const fqn = def.id // TODO
+    //   const redef = {
+    //     fqn,
+    //     ...def,
+    //     ...rebuildMosaicProps(def.properties),
+    //     supply
+    //   }
+    //   this.cacheMosaicDefinition(redef)
+    //   NEM_WS.requests.account.mosaics.owned(this.connector)
+    // },
+    // onReceivedOwnedMosaics (res) {
+    //   // console.log('-- onReceivedOwnedMosaics')
+    //   // res['fqn'] = nem.utils.format.mosaicIdToName(res.mosaicId)
+    //   res['fqn'] = res.mosaicId // TODO
+    //   this.mosaics = _.sortBy(_.unionBy([res], this.mosaics, 'fqn'), 'fqn')
+    // },
     onReceivedAccountData (res) {
-      // console.log('-- onReceivedAccountData')
-      // console.log(res)
+      console.log('-- onReceivedAccountData')
+      console.log(res)
       this.info = {
-        ...res.meta,
-        ...res.account
+        ...res,
+        ...res.balance,
+        ...res.publicAccount
       }
     },
-    onReceivedChainHeight (res) {
-      // console.log('-- onReceivedChainHeight')
+    onReceivedBlock (res) {
+      // console.log('-- onReceivedBlock')
+      // console.log(res)
       this.height = res.height
     },
     onError (res) {

@@ -6,7 +6,7 @@
     </el-row>
     <el-row v-if="!isMosaicTransfer">
       <el-col :span="4">Amount</el-col>
-      <el-col :span="20">{{ amount | nemValue }} xem</el-col>
+      <el-col :span="20">{{ amount }} xem</el-col>
     </el-row>
     <el-row v-if="message.payload">
       <el-col :span="4">Message</el-col>

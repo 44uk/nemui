@@ -5,18 +5,26 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 const DEFAULT_TESTNET_NODES = [
+  'bigalice2.nem.ninja',
+  '192.3.61.243',
   '23.228.67.85',
   '50.3.87.123',
-  '52.183.75.101',
-  '104.128.226.60',
   'nis-testnet.44uk.net'
 ]
 
 const DEFAULT_MAINNET_NODES = [
-  '88.99.192.82',
-  '176.9.20.180',
-  '176.9.68.110',
-  '199.217.118.114',
+  '62.75.171.41',
+  'san.nem.ninja',
+  'go.nem.ninja',
+  'hachi.nem.ninja',
+  'jusan.nem.ninja',
+  'nijuichi.nem.ninja',
+  'alice2.nem.ninja',
+  'alice3.nem.ninja',
+  'alice4.nem.ninja',
+  'alice5.nem.ninja',
+  'alice6.nem.ninja',
+  'alice7.nem.ninja',
   'shibuya.supernode.me'
 ]
 

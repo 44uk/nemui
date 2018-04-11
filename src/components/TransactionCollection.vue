@@ -213,16 +213,22 @@ export default {
     MosaicDefinitionCreationInfo,
     MosaicSupplyChangeInfo
   },
-  props: ['items', 'address'],
+  props: {
+    'items': Array,
+    'address': String
+  },
   computed: {
     data: function () {
       return this.items.map(el => {
-        const meta = el.meta
-        const tx = el.transaction.otherTrans
-          ? el.transaction.otherTrans
-          : el.transaction
-        const multisig = el.transaction.otherTrans
-          ? el.transaction
+        // Unconfirmedのときにnull
+        const txInfo = el.transactionInfo
+
+        const dto = el.toDTO()
+        const tx = dto.otherTrans
+          ? dto.otherTrans
+          : dto
+        const multisig = dto.otherTrans
+          ? dto
           : null
 
         const multisigFee = multisig ? multisig.signatures.reduce((memo, el) => {
@@ -235,7 +241,7 @@ export default {
           isMultisig: !!multisig,
           isMosaicTransfer: !!tx.mosaics && tx.mosaics.length > 0,
           typeName: this.$options.filters.txTypeToName(tx.type),
-          meta,
+          meta: txInfo,
           ...tx,
           multisigFee,
           multisig
@@ -257,6 +263,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>
