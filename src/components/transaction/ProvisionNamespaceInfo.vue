@@ -1,22 +1,17 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Parent</el-col>
-      <el-col :span="20">{{ parent }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">NewPart</el-col>
-      <el-col :span="20">{{ newPart }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Rental Fee Sink</el-col>
-      <el-col :span="20">{{ rentalFeeSink | splitAddressByHyphen }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Rental Fee</el-col>
-      <el-col :span="20">{{ rentalFee | nemValue }} xem</el-col>
-    </el-row>
-  </div>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4") Parent
+      el-col(:span="20") {{ parent }}
+    el-row
+      el-col(:span="4") NewPart
+      el-col(:span="20") {{ newPart }}
+    el-row
+      el-col(:span="4") Rental Fee Sink
+      el-col(:span="20") {{ rentalFeeSink | splitAddressByHyphen }}
+    el-row
+      el-col(:span="4") Rental Fee
+      el-col(:span="20") {{ rentalFee | nemValue }} xem
 </template>
 
 <script>

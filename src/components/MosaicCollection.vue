@@ -1,116 +1,84 @@
-<template>
-  <el-table :data="mosaics"
+<template lang="pug">
+  el-table(:data="mosaics"
     size="mini"
     height="320"
     style="width: 100%"
-  >
-    <el-table-column type="expand">
-      <template slot-scope="scope">
-        <el-row>
-          <el-col :span="4">Creator</el-col>
-          <el-col :span="20">
-            {{ scope.row.creator | publicKeyToAddress | splitAddressByHyphen }}<br>
-            {{ scope.row.creator }}
-          </el-col>
-        </el-row>
+  )
+    el-table-column(type="expand")
+      template(slot-scope="scope")
+        el-row
+          el-col(:span="4") Creator
+          el-col(:span="20")
+            | {{ scope.row.creator | publicKeyToAddress | splitAddressByHyphen }}
+            br
+            | {{ scope.row.creator }}
 
-        <el-row>
-          <el-col :span="4">Description</el-col>
-          <el-col :span="20">{{ scope.row.description }}</el-col>
-        </el-row>
+        el-row
+          el-col(:span="4") Description
+          el-col(:span="20") {{ scope.row.description }}
 
-        <el-row>
-          <el-col :span="4">Divisibility</el-col>
-          <el-col :span="8">{{ scope.row.divisibility }}</el-col>
-          <el-col :span="4">supplyMutable</el-col>
-          <el-col :span="8">{{ scope.row.supplyMutable }}</el-col>
-        </el-row>
+        el-row
+          el-col(:span="4") Divisibility
+          el-col(:span="8") {{ scope.row.divisibility }}
+          el-col(:span="4") supplyMutable
+          el-col(:span="8") {{ scope.row.supplyMutable }}
 
-        <el-row>
-          <el-col :span="4">InitialSupply</el-col>
-          <el-col :span="8">{{ scope.row.initialSupply }}</el-col>
-          <el-col :span="4">Transferable</el-col>
-          <el-col :span="8">{{ scope.row.transferable }}</el-col>
-        </el-row>
+        el-row
+          el-col(:span="4") InitialSupply
+          el-col(:span="8") {{ scope.row.initialSupply }}
+          el-col(:span="4") Transferable
+          el-col(:span="8") {{ scope.row.transferable }}
 
-        <el-row>
-          <el-col :span="4">CurrentSupply</el-col>
-          <el-col :span="8">{{ scope.row.supply }}</el-col>
-        </el-row>
+        el-row
+          el-col(:span="4") CurrentSupply
+          el-col(:span="8") {{ scope.row.supply }}
 
-        <el-row v-if="scope.row.levy.recipient">
-          <el-col :span="4">Levy</el-col>
-          <el-col :span="20">
-            <levy
+        el-row(v-if="scope.row.levy.recipient")
+          el-col(:span="4") Levy
+          el-col(:span="20")
+            levy(
               :fee="scope.row.levy.fee"
               :recipient="scope.row.levy.recipient"
               :type="scope.row.levy.type"
               :mosaicId="scope.row.levy.mosaicId"
-            />
-          </el-col>
-        </el-row>
-      </template>
-    </el-table-column>
-    <el-table-column
+            )
+
+    el-table-column(
       prop="namespaceId"
       label="NS"
       filter-placement="bottom-end"
       :filters="filterNamespaces"
       :filter-method="filterNamespace"
-    >
-    </el-table-column>
-    <el-table-column
+    )
+    el-table-column(
       prop="name"
       label="Name"
       filter-placement="bottom-end"
       :filters="filterNames"
       :filter-method="filterName"
-    >
-    </el-table-column>
-    <el-table-column
+    )
+    el-table-column(
       prop="qty"
       label="QTY"
       align="right"
-    >
-    </el-table-column>
-    <el-table-column
+    )
+    el-table-column(
       width="400"
       prop="description"
       label="Description"
-    >
-    </el-table-column>
-
-    <el-table-column
+    )
+    el-table-column(
       width="60"
       label="Levy"
-    >
-      <template slot-scope="scope">
-        <el-tag :type="scope.row.hasLevy ? 'danger' : 'info'" size="mini">
-          Levy
-        </el-tag>
-      </template>
-    </el-table-column>
-    <el-table-column
-      width="120"
-      label="SupplyMutable"
-    >
-      <template slot-scope="scope">
-        <el-tag :type="scope.row.supplyMutable ? 'warning' : 'info'" size="mini">
-          supplyMutable
-        </el-tag>
-      </template>
-    </el-table-column>
-    <el-table-column
-      width="120"
-      label="Transferable"
-    >
-      <template slot-scope="scope">
-        <el-tag :type="scope.row.transferable ? 'success' : 'info'" size="mini">
-          Transferable
-        </el-tag>
-      </template>
-    </el-table-column>
-  </el-table>
+    )
+      template(slot-scope="scope")
+        el-tag(:type="scope.row.hasLevy ? 'danger' : 'info'" size="mini") Levy
+    el-table-column(width="120" label="SupplyMutable")
+      template(slot-scope="scope")
+        el-tag(:type="scope.row.supplyMutable ? 'warning' : 'info'" size="mini") supplyMutable
+    el-table-column(width="120" label="Transferable")
+      template(slot-scope="scope")
+        el-tag(:type="scope.row.transferable ? 'success' : 'info'" size="mini") Transferable
 </template>
 
 <script>

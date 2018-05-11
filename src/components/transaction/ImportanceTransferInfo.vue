@@ -1,17 +1,14 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Remote Account</el-col>
-      <el-col :span="20">
-        {{ remoteAccount }}<br>
-        {{ remoteAccount | publicKeyToAddress | splitAddressByHyphen }}
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Mode</el-col>
-      <el-col :span="20">{{ mode | modeToName }}</el-col>
-    </el-row>
-  </div>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4") Remote Account
+      el-col(:span="20")
+        | {{ remoteAccount }}
+        br
+        | {{ remoteAccount | publicKeyToAddress | splitAddressByHyphen }}
+    el-row
+      el-col(:span="4") Mode
+      el-col(:span="20") {{ mode | modeToName }}
 </template>
 
 <script>

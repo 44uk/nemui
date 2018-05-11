@@ -1,18 +1,14 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Mosaic</el-col>
-      <el-col :span="20">{{ mosaicId | mosaicIdToFqn }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Supply Type</el-col>
-      <el-col :span="20">{{ supplyType | supplyTypeToName }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Delta</el-col>
-      <el-col :span="20">{{ delta }}</el-col>
-    </el-row>
-  </div>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4") Mosaic
+      el-col(:span="20") {{ mosaicId | mosaicIdToFqn }}
+    el-row
+      el-col(:span="4") Supply Type
+      el-col(:span="20") {{ supplyType | supplyTypeToName }}
+    el-row
+      el-col(:span="4") Delta
+      el-col(:span="20") {{ delta }}
 </template>
 
 <script>

@@ -1,25 +1,18 @@
-<template>
-  <div>
-    <el-form :model="node" :rules="rules" ref="form">
-      <el-form-item label="Node" prop="host">
-        <el-input v-model="node.host" placeholder="Node ip or domain" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('form')">Add</el-button>
-      </el-form-item>
-    </el-form>
+<template lang="pug">
+  div
+    el-form(:model="node" :rules="rules" ref="form")
+      el-form-item(label="Node" prop="host")
+        el-input(v-model="node.host" placeholder="Node ip or domain")
+      el-form-item
+        el-button(type="primary" @click="submitForm('form')") Add
 
-    <ul>
-      <li v-for="item in nodes" :key="item">
-        <el-button icon="el-icon-delete"
-          size="mini"
+    ul
+      li(v-for="item in nodes" :key="item")
+        el-button(icon="el-icon-delete" size="mini"
           style="margin-right: 0.5em"
           @click="remove(item)"
-        />
-        <span>{{ item }}</span>
-      </li>
-    </ul>
-  </div>
+        )
+        span {{ item }}
 </template>
 
 <script>

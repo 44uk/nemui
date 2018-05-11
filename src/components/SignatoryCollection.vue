@@ -1,23 +1,13 @@
-<template>
-  <el-table :data="items"
+<template lang="pug">
+  el-table(:data="items"
     style="width: 100%"
     size="mini"
     height="320"
-  >
-    <el-table-column
-      prop="address"
-      label="Address"
-    >
-      <template slot-scope="scope">
-        {{ scope.row.address | splitAddressByHyphen }}
-      </template>
-    </el-table-column>
-    <el-table-column
-      prop="publicKey"
-      label="PublicKey"
-    >
-    </el-table-column>
-  </el-table>
+  )
+    el-table-column(prop="address" label="Address")
+      template(slot-scope="scope")
+        | {{ scope.row.address | splitAddressByHyphen }}
+    el-table-column(prop="publicKey" label="PublicKey")
 </template>
 
 <script>

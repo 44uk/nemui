@@ -1,11 +1,10 @@
-<template>
-  <div>
-    <el-switch v-model="config.sound"
+<template lang="pug">
+  div
+    el-switch(v-model="config.sound"
       v-on:change="setSound(config.sound)"
       active-text="Play Sound"
-      inactive-text="Mute Sound">
-    </el-switch>
-  </div>
+      inactive-text="Mute Sound"
+    )
 </template>
 
 <script>

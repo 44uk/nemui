@@ -1,33 +1,26 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Fee</el-col>
-      <el-col :span="20">{{ fee | nemValue }} xem</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Timestamp</el-col>
-      <el-col :span="20">{{ timeStamp | nemtime2iso8601 }} </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Deadline</el-col>
-      <el-col :span="20">{{ deadline | nemtime2iso8601 }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Block</el-col>
-      <el-col :span="20"><a :href="blockUrl" target="_blank">{{ block }}</a></el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Hash</el-col>
-      <el-col :span="20">{{ hash }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Signer</el-col>
-      <el-col :span="20">
-        {{ signer }}<br>
-        {{ signer | publicKeyToAddress(network) | splitAddressByHyphen }}
-      </el-col>
-    </el-row>
-  </div>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4" ) Fee
+      el-col(:span="20") {{ fee | nemValue }} xem
+    el-row
+      el-col(:span="4" ) Timestamp
+      el-col(:span="20") {{ timeStamp | nemtime2iso8601 }}
+    el-row
+      el-col(:span="4" ) Deadline
+      el-col(:span="20") {{ deadline | nemtime2iso8601 }}
+    el-row
+      el-col(:span="4" ) Block
+      el-col(:span="20") <a :href="blockUrl" target="_blank">{{ block }}</a>
+    el-row
+      el-col(:span="4" ) Hash
+      el-col(:span="20") {{ hash }}
+    el-row
+      el-col(:span="4" ) Signer
+      el-col(:span="20")
+        | {{ signer }}
+        br
+        | {{ signer | publicKeyToAddress(network) | splitAddressByHyphen }}
 </template>
 
 <script>
