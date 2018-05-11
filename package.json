@@ -14,18 +14,18 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "element-theme-chalk": "^2.1.0",
-    "element-ui": "^2.1.0",
-    "lodash": "^4.17.4",
-    "moment": "^2.20.1",
+    "element-theme-chalk": "^2.3.7",
+    "element-ui": "^2.3.7",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1",
     "nem-sdk": "44uk/NEM-sdk#txTypeToName",
-    "node-fetch": "^2.0.0",
+    "node-fetch": "^2.1.2",
     "sanitize.css": "^5.0.0",
     "style-loader": "^0.20.1",
     "vue": "^2.5.13",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "vuex-persistedstate": "^2.4.2"
+    "vuex-persistedstate": "^2.5.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.5",
