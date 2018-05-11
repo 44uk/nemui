@@ -5,11 +5,12 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 const DEFAULT_TESTNET_NODES = [
-  '23.228.67.85',
-  '50.3.87.123',
-  '52.183.75.101',
   '104.128.226.60',
-  'nis-testnet.44uk.net'
+  '23.228.67.85',
+  '188.68.50.161',
+  '176.9.18.25:7890',
+  'nis-testnet.44uk.net',
+  'localhost'
 ]
 
 const DEFAULT_MAINNET_NODES = [
@@ -17,7 +18,8 @@ const DEFAULT_MAINNET_NODES = [
   '176.9.20.180',
   '176.9.68.110',
   '199.217.118.114',
-  'shibuya.supernode.me'
+  'shibuya.supernode.me',
+  'localhost'
 ]
 
 const DEFAULT_MIJIN_NODES = [
