@@ -60,7 +60,7 @@
           i(v-if="!scope.row.isMultisig" class="el-icon-caret-left")
 
         span(v-if="scope.row.isIncoming && scope.row.type === 257")
-          | {{ scope.row.signer | publicKeyToAddress | splitAddressByHyphen }}
+          | {{ scope.row.signer | publicKeyToAddress(network) | splitAddressByHyphen }}
         span(v-if="!scope.row.isIncoming && scope.row.type === 257")
           | {{ scope.row.recipient | splitAddressByHyphen }}
 
@@ -145,6 +145,7 @@ import {
   modeToName,
   nemValue
 } from '@/helpers/format.js'
+import { mapGetters } from 'vuex'
 import TransactionInfo from '@/components/TransactionInfo'
 import MultisigInfo from '@/components/transaction/MultisigInfo'
 import TransferInfo from '@/components/transaction/TransferInfo'
@@ -177,6 +178,9 @@ export default {
   },
   props: ['items', 'address'],
   computed: {
+    ...mapGetters([
+      'network'
+    ]),
     data: function () {
       return this.items.map(el => {
         const meta = el.meta

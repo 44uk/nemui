@@ -9,7 +9,7 @@
         el-row
           el-col(:span="4") Creator
           el-col(:span="20")
-            | {{ scope.row.creator | publicKeyToAddress | splitAddressByHyphen }}
+            | {{ scope.row.creator | publicKeyToAddress(network) | splitAddressByHyphen }}
             br
             | {{ scope.row.creator }}
 
@@ -104,6 +104,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'network',
       'mosaicDefinitions'
     ]),
     mosaics () {

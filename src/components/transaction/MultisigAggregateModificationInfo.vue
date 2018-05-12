@@ -11,7 +11,7 @@
           el-col(:span="2") Type
           el-col(:span="2") {{ mod.modificationType | modificationTypeToName }}
           el-col(:span="4") Account
-          el-col(:span="16") {{ mod.cosignatoryAccount | publicKeyToAddress }}
+          el-col(:span="16") {{ mod.cosignatoryAccount | publicKeyToAddress(network) }}
 </template>
 
 <script>
@@ -21,6 +21,7 @@ import {
   nemtime2iso8601,
   nemValue
 } from '@/helpers/format.js'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'multisig-aggregate-modification-info',
@@ -31,6 +32,9 @@ export default {
     nemValue
   },
   components: {
+    ...mapGetters([
+      'network'
+    ])
   },
   props: {
     relativeChange: Number,

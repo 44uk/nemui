@@ -5,7 +5,7 @@
       el-col(:span="20")
         | {{ remoteAccount }}
         br
-        | {{ remoteAccount | publicKeyToAddress | splitAddressByHyphen }}
+        | {{ remoteAccount | publicKeyToAddress(network) | splitAddressByHyphen }}
     el-row
       el-col(:span="4") Mode
       el-col(:span="20") {{ mode | modeToName }}
@@ -19,6 +19,7 @@ import {
   modeToName,
   nemValue
 } from '@/helpers/format.js'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'importance-transfer-info',
@@ -40,6 +41,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'network'
+    ])
   },
   methods: {
   }
