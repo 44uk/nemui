@@ -2,10 +2,14 @@
   el-card(:body-style="{padding: '10px 20px'}")
     div(slot="header")
       span {{ address | splitAddressByHyphen }}
+      | &nbsp;
       el-tag(type="success" size="mini" v-if="isCosignatory") Cosignatory
+      | &nbsp;
       el-tag(type="warning" size="mini" v-if="isMultisig") Multisig
+      | &nbsp;
       el-tag(size="mini" v-if="isMultisig")
         | {{msigInfo.minCosignatories }}of{{ msigInfo.cosignatoriesCount}}
+      | &nbsp;
       el-tag(type="danger" size="mini" v-if="is2of2Multisig")
         i.el-icon-warning
 

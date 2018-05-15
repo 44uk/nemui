@@ -21,7 +21,7 @@ import {
   nemtime2iso8601,
   nemValue
 } from '@/helpers/format.js'
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'multisig-aggregate-modification-info',

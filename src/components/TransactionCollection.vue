@@ -58,14 +58,14 @@
         el-tag(v-if="!scope.row.isIncoming" type="danger" size="mini")
           i(v-if="scope.row.isMultisig" class="el-icon-edit-outline")
           i(v-if="!scope.row.isMultisig" class="el-icon-caret-left")
+        | &nbsp;
 
         span(v-if="scope.row.isIncoming && scope.row.type === 257")
           | {{ scope.row.signer | publicKeyToAddress(network) | splitAddressByHyphen }}
         span(v-if="!scope.row.isIncoming && scope.row.type === 257")
           | {{ scope.row.recipient | splitAddressByHyphen }}
-
         span(v-if="scope.row.type === 2049")
-          | Delegated harvesting:
+          | Delegated harvesting:&nbsp;
           el-tag(:type="scope.row.mode === 1 ? 'success' : 'danger'" size="mini")
             | {{ scope.row.mode | modeToName }}
         span(v-if="scope.row.type === 4097")
@@ -79,11 +79,11 @@
           el-tag(type="info" size="mini")
             | {{ scope.row.parent }} {{ scope.row.newPart }}
         span(v-if="scope.row.type === 16385")
-          | Mosaic Definition Creation:
+          | Mosaic Definition Creation:&nbsp;
           el-tag(type="info" size="mini")
             | {{ scope.row.mosaicDefinition.id | mosaicIdToFqn }}
         span(v-if="scope.row.type === 16386")
-          | Mosaic Supply Change:
+          | Mosaic Supply Change:&nbsp;
           el-tag(type="info" size="mini")
             | {{ scope.row.mosaicId | mosaicIdToFqn }}
 
