@@ -1,45 +1,35 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Mosaic</el-col>
-      <el-col :span="20">{{ mosaicDefinition.id | mosaicIdToFqn }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Creation Fee Sink</el-col>
-      <el-col :span="20">{{ creationFeeSink | splitAddressByHyphen }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Creation Fee</el-col>
-      <el-col :span="20">{{ creationFee | nemValue }} xem</el-col>
-    </el-row>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4") Mosaic
+      el-col(:span="20") {{ mosaicDefinition.id | mosaicIdToFqn }}
+    el-row
+      el-col(:span="4") Creation Fee Sink
+      el-col(:span="20") {{ creationFeeSink | splitAddressByHyphen }}
+    el-row
+      el-col(:span="4") Creation Fee
+      el-col(:span="20") {{ creationFee | nemValue }} xem
 
-    <el-row>
-      <el-col :span="4">Description</el-col>
-      <el-col :span="20">{{ mosaicDefinition.description }}</el-col>
-    </el-row>
+    el-row
+      el-col(:span="4") Description
+      el-col(:span="20") {{ mosaicDefinition.description }}
 
-    <el-row>
-      <el-col :span="4">Properties</el-col>
-      <el-col :span="20">
-        <el-row v-for="prop in mosaicDefinition.properties" :key="prop.name">
-          <el-col :span="4">{{ prop.name }}</el-col>
-          <el-col :span="20">{{ prop.value }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
+    el-row
+      el-col(:span="4") Properties
+      el-col(:span="20")
+        el-row(v-for="prop in mosaicDefinition.properties" :key="prop.name")
+          el-col(:span="4") {{ prop.name }}
+          el-col(:span="20") {{ prop.value }}
 
-    <el-row v-if="mosaicDefinition.levy.recipient">
-      <el-col :span="4">Levy</el-col>
-      <el-col :span="20">
-        <levy
+    el-row(v-if="mosaicDefinition.levy.recipient")
+      el-col(:span="4") Levy
+      el-col(:span="20")
+        levy(
           :fee="mosaicDefinition.levy.fee"
           :recipient="mosaicDefinition.levy.recipient"
           :type="mosaicDefinition.levy.type"
           :mosaicId="mosaicDefinition.levy.mosaicId"
-        />
-      </el-col>
-    </el-row>
-  </div>
+        )
 </template>
 
 <script>

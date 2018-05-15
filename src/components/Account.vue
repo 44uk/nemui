@@ -1,66 +1,55 @@
-<template>
-  <el-card :body-style="{padding: '10px 20px'}">
-    <div slot="header">
-      <span>{{ address | splitAddressByHyphen }}</span>
-      <el-tag type="success" size="mini" v-if="isCosignatory">Cosignatory</el-tag>
-      <el-tag type="warning" size="mini" v-if="isMultisig">Multisig</el-tag>
-      <el-tag size="mini" v-if="isMultisig">
-        {{msigInfo.minCosignatories }}of{{ msigInfo.cosignatoriesCount}}
-      </el-tag>
-      <el-tag type="danger" size="mini" v-if="is2of2Multisig">
-        <i class="el-icon-warning" />
-      </el-tag>
+<template lang="pug">
+  el-card(:body-style="{padding: '10px 20px'}")
+    div(slot="header")
+      span {{ address | splitAddressByHyphen }}
+      | &nbsp;
+      el-tag(type="success" size="mini" v-if="isCosignatory") Cosignatory
+      | &nbsp;
+      el-tag(type="warning" size="mini" v-if="isMultisig") Multisig
+      | &nbsp;
+      el-tag(size="mini" v-if="isMultisig")
+        | {{msigInfo.minCosignatories }}of{{ msigInfo.cosignatoriesCount}}
+      | &nbsp;
+      el-tag(type="danger" size="mini" v-if="is2of2Multisig")
+        i.el-icon-warning
 
-      <el-button icon="el-icon-delete"
-        size="mini"
+      el-button(icon="el-icon-delete" size="mini"
         type="danger"
         style="float: right"
         @click="remove()"
-      />
-      <el-button icon="el-icon-refresh"
-        size="mini"
+      )
+      el-button(icon="el-icon-refresh" size="mini"
         type="success"
         style="float: right; margin-right: 0.5em"
         @click="refresh()"
-      />
-    </div>
+      )
 
-    <el-tabs v-model="activeTab">
-      <el-tab-pane label="Unconfirmed" name="unconfirmed">
-        <span slot="label">
-          <el-badge :is-dot="true" :hidden="unconfirmed.length === 0">Unconfirmed</el-badge>
-        </span>
-        <transaction-collection :items="unconfirmed" :address="address" />
-      </el-tab-pane>
+    el-tabs(v-model="activeTab")
+      el-tab-pane(label="Unconfirmed" name="unconfirmed")
+        span(slot="label")
+          el-badge(:is-dot="true" :hidden="unconfirmed.length === 0") Unconfirmed
+        transaction-collection(:items="unconfirmed" :address="address")
 
-      <el-tab-pane label="Transactions" name="transactions">
-        <transaction-collection :items="transactions" :address="address" />
-      </el-tab-pane>
+      el-tab-pane(label="Transactions" name="transactions")
+        transaction-collection(:items="transactions" :address="address")
 
-      <el-tab-pane label="Mosaics" name="mosaics">
-        <mosaic-collection :items="mosaics" />
-      </el-tab-pane>
+      el-tab-pane(label="Mosaics" name="mosaics")
+        mosaic-collection(:items="mosaics")
 
-      <el-tab-pane label="Account" name="account">
-        <account-info :info="info"
-          :node="node"
-          :height="height"
-        />
-      </el-tab-pane>
+      el-tab-pane(label="Account" name="account")
+        account-info(:info="info"
+         :node="node"
+         :height="height"
+        )
 
-      <el-tab-pane label="Cosignatories" name="cosignatories" v-if="isMultisig">
-        <cosignatoryCollection :items="info.cosignatories" />
-      </el-tab-pane>
+      el-tab-pane(label="Cosignatories" name="cosignatories" v-if="isMultisig")
+        cosignatoryCollection(:items="info.cosignatories")
 
-      <el-tab-pane label="CosignatoryOf" name="cosignatoryOf" v-if="isCosignatory">
-        <signatoryCollection :items="info.cosignatoryOf" />
-      </el-tab-pane>
+      el-tab-pane(label="CosignatoryOf" name="cosignatoryOf" v-if="isCosignatory")
+        signatoryCollection(:items="info.cosignatoryOf")
 
-      <el-tab-pane v-if="false" label="Config" name="config">
-        <config></config>
-      </el-tab-pane>
-    </el-tabs>
-  </el-card>
+      el-tab-pane(v-if="false" label="Config" name="config")
+        config
 </template>
 
 <script>

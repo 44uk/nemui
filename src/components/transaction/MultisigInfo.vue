@@ -1,27 +1,21 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Signer</el-col>
-      <el-col :span="20">{{ signer }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Signatures</el-col>
-      <el-col :span="20">
-        <signature-info v-for="sign in signatures" :key="sign.signature"
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4") Signer
+      el-col(:span="20") {{ signer }}
+    el-row
+      el-col(:span="4") Signatures
+      el-col(:span="20")
+        signature-info(v-for="sign in signatures" :key="sign.signature"
           :timeStamp="sign.timeStamp"
           :deadline="sign.deadline"
           :otherAccount="sign.otherAccount"
           :signer="sign.signer"
-
           :data="sign"
-        />
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Multisig Fee</el-col>
-      <el-col :span="20">{{ signFee | nemValue }} xem</el-col>
-    </el-row>
-  </div>
+        )
+    el-row
+      el-col(:span="4") Multisig Fee
+      el-col(:span="20") {{ signFee | nemValue }} xem
 </template>
 
 <script>
@@ -65,7 +59,6 @@ export default {
     signer: String,
     signatures: Array,
     fee: Number,
-
     data: Object
   },
   data: function () {

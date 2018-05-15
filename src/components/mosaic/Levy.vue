@@ -1,22 +1,17 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Mosaic</el-col>
-      <el-col :span="20">{{ mosaicId | mosaicIdToFqn }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Recipient</el-col>
-      <el-col :span="20">{{ recipient | splitAddressByHyphen }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Fee</el-col>
-      <el-col :span="20">{{ levyFee }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Type</el-col>
-      <el-col :span="20">{{ type | levyTypeToName }}</el-col>
-    </el-row>
-  </div>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4" ) Mosaic
+      el-col(:span="20") {{ mosaicId | mosaicIdToFqn }}
+    el-row
+      el-col(:span="4" ) Recipient
+      el-col(:span="20") {{ recipient | splitAddressByHyphen }}
+    el-row
+      el-col(:span="4" ) Fee
+      el-col(:span="20") {{ levyFee }}
+    el-row
+      el-col(:span="4" ) Type
+      el-col(:span="20") {{ type | levyTypeToName }}
 </template>
 
 <script>

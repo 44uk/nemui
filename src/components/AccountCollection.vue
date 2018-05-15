@@ -1,14 +1,13 @@
-<template>
-  <div class="account-collection">
-    <account v-for="item in accounts" :key="identify(item)"
+<template lang="pug">
+  .account-collection
+    account(v-for="item in accounts" :key="identify(item)"
       :address="item.address"
       :node="item.node"
-    />
-  </div>
+    )
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
 import Account from '@/components/Account'
 
 export default {
@@ -19,10 +18,10 @@ export default {
   props: {
     accounts: Array
   },
-  computed: {
-    ...mapGetters([
-    ])
-  },
+  // computed: {
+  //   ...mapGetters([
+  //   ])
+  // },
   methods: {
     identify (account) {
       return `${account.address}@${account.node}`

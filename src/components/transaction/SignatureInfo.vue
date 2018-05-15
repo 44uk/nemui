@@ -1,25 +1,20 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Signer</el-col>
-      <el-col :span="20">
-        {{ signer }}<br>
-        {{ signer | publicKeyToAddress(network) | splitAddressByHyphen }}
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Timestamp</el-col>
-      <el-col :span="20">{{ timeStamp | nemtime2iso8601 }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Deadline</el-col>
-      <el-col :span="20">{{ deadline | nemtime2iso8601 }}</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">Other Account</el-col>
-      <el-col :span="20">{{ otherAccount | splitAddressByHyphen }}</el-col>
-    </el-row>
-  </div>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4") Signer
+      el-col(:span="20")
+        | {{ signer }}
+        br
+        | {{ signer | publicKeyToAddress(network) | splitAddressByHyphen }}
+    el-row
+      el-col(:span="4") Timestamp
+      el-col(:span="20") {{ timeStamp | nemtime2iso8601 }}
+    el-row
+      el-col(:span="4") Deadline
+      el-col(:span="20") {{ deadline | nemtime2iso8601 }}
+    el-row
+      el-col(:span="4") Other Account
+      el-col(:span="20") {{ otherAccount | splitAddressByHyphen }}
 </template>
 
 <script>

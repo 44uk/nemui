@@ -1,22 +1,17 @@
-<template>
-  <div>
-    <el-row>
-      <el-col :span="4">Relative Change</el-col>
-      <el-col :span="20">{{ relativeChange }}</el-col>
-    </el-row>
+<template lang="pug">
+  div
+    el-row
+      el-col(:span="4") Relative Change
+      el-col(:span="20") {{ relativeChange }}
 
-    <el-row>
-      <el-col :span="4">Modifications</el-col>
-      <el-col :span="20">
-        <el-row v-for="mod in modifications" :key="mod.cosignatoryAccount">
-          <el-col :span="2">Type</el-col>
-          <el-col :span="2">{{ mod.modificationType | modificationTypeToName }}</el-col>
-          <el-col :span="4">Account</el-col>
-          <el-col :span="16">{{ mod.cosignatoryAccount | publicKeyToAddress }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-  </div>
+    el-row
+      el-col(:span="4">Modifications)
+      el-col(:span="20")
+        el-row(v-for="mod in modifications" :key="mod.cosignatoryAccount")
+          el-col(:span="2") Type
+          el-col(:span="2") {{ mod.modificationType | modificationTypeToName }}
+          el-col(:span="4") Account
+          el-col(:span="16") {{ mod.cosignatoryAccount | publicKeyToAddress(network) }}
 </template>
 
 <script>
@@ -26,6 +21,7 @@ import {
   nemtime2iso8601,
   nemValue
 } from '@/helpers/format.js'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'multisig-aggregate-modification-info',
@@ -36,6 +32,9 @@ export default {
     nemValue
   },
   components: {
+    ...mapGetters([
+      'network'
+    ])
   },
   props: {
     relativeChange: Number,

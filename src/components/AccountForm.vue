@@ -1,20 +1,15 @@
-<template>
-  <el-form :model="account" :rules="rules" ref="form">
-    <el-form-item label="Address" prop="address">
-      <el-input v-model="account.address" placeholder="Address" />
-    </el-form-item>
-    <el-form-item label="Node" prop="node">
-      <el-select v-model="account.node" placeholder="Node">
-        <el-option v-for="(item, idx) in nodes" :key="idx"
+<template lang="pug">
+  el-form(:model="account" :rules="rules" ref="form")
+    el-form-item(label="Address" prop="address")
+      el-input(v-model="account.address" placeholder="Address")
+    el-form-item(label="Node" prop="node")
+      el-select(v-model="account.node" placeholder="Node")
+        el-option(v-for="(item, idx) in nodes" :key="idx"
           :label="item"
           :value="item"
-        />
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="submitForm('form')">Add</el-button>
-    </el-form-item>
-  </el-form>
+        )
+    el-form-item
+      el-button(type="primary" @click="submitForm('form')") Add
 </template>
 
 <script>
